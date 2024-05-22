@@ -1,5 +1,6 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom/client'
+import Commento from "react-commento"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -66,6 +67,7 @@ const columns = [
 
 function App() {
   const [data, setData] = React.useState(makeData(10))
+  const [rowId, setRowId] = React.useState()
   const rerender = () => setData(makeData(10))
 
   const table = useReactTable({
@@ -73,6 +75,10 @@ function App() {
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
+
+  const onTableRowClick = (id) => e => {
+    setRowId(id)
+  }
 
   return (
     <div className="p-2">
@@ -95,7 +101,7 @@ function App() {
         </thead>
         <tbody>
           {table.getRowModel().rows.map(row => (
-            <tr key={row.id}>
+            <tr key={row.id} onClick={onTableRowClick(row.id)}>
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -125,6 +131,20 @@ function App() {
         <button onClick={() => rerender()} className="border p-2">
           Rerender
         </button>
+      </div>
+      <div className=''>
+        {rowId?.toString()}
+        {rowId !== undefined ?
+          <Commento
+            pageId={`row-id-${rowId}`}
+            id={`row-id-${rowId}`}
+            // cssOverride?: string | undefined;
+            // autoInit?: boolean | undefined;
+            noFonts={false}
+          // noFonts?: boolean | undefined;
+          // hideDeleted?: boolean | undefined;
+          />
+          : null}
       </div>
     </div>
   )
